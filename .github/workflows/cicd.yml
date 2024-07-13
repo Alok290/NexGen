@@ -14,17 +14,17 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t alok290/NexGen-app .
+        run: docker build -t alok290/nexgen-app .
       - name: Publish image to docker hub
-        run: docker push alok290/NexGen-app:latest   
+        run: docker push alok290/nexgen-app:latest   
 
   deploy: 
     needs: build
     runs-on: aws-ec2    
     steps:
       - name: Pull image from docker hub
-        run: docker pull alok290/NexGen-app:latest 
+        run: docker pull alok290/nexgen-app:latest 
       - name: Delete Old Container
         run: docker rm -f reactContainer
       - name: Run docker container
-        run: docker run -d -p 3000:80 --name reactContainer alok290/NexGen-app   
+        run: docker run -d -p 3000:80 --name reactContainer alok290/nexgen-app   
