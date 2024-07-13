@@ -11,29 +11,20 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
-
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build Docker Image
-        run: |
-          docker build -t alok290/nexgen-app .
-          docker push alok290/nexgen-app:latest
+        run: docker build -t alok290/nexgen-app .
+      - name: Publish image to Docker Hub
+        run: docker push alok290/nexgen-app:latest   
 
-  deploy:
+  deploy: 
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: aws-ec2    
     steps:
-      - name: SSH into AWS EC2 Instance
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USER }}
-          key: ${{ secrets.AWS_PRIVATE_KEY }}
-          port: ${{ secrets.AWS_EC2_PORT }}
-        # Commands to run on the EC2 instance
-        script: |
-          docker pull alok290/nexgen-app:latest
-          docker stop reactContainer || true
-          docker rm reactContainer || true
-          docker run -d -p 3000:80 --name reactContainer alok290/nexgen-app
+      - name: Pull image from Docker Hub
+        run: docker pull alok290/nexgen-app:latest 
+      - name: Delete Old Container
+        run: docker rm -f reactContainer
+      - name: Run docker container
+        run: docker run -d -p 3000:80 --name reactContainer alok290/nexgen-app
