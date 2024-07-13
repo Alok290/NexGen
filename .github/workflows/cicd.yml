@@ -31,10 +31,9 @@ jobs:
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
-
-          # Commands to run on the EC2 instance
-          script: |
-            docker pull alok290/nexgen-app:latest
-            docker stop reactContainer || true
-            docker rm reactContainer || true
-            docker run -d -p 3000:80 --name reactContainer alok290/nexgen-app
+        # Commands to run on the EC2 instance
+        script: |
+          docker pull alok290/nexgen-app:latest
+          docker stop reactContainer || true
+          docker rm reactContainer || true
+          docker run -d -p 3000:80 --name reactContainer alok290/nexgen-app
